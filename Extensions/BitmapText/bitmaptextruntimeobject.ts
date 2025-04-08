@@ -165,7 +165,7 @@ namespace gdjs {
 
     updateFromNetworkSyncData(
       networkSyncData: BitmapTextObjectNetworkSyncData,
-      options?: { skipMultiplayerInstructions: boolean }
+      options?: UpdateFromNetworkSyncDataOptions
     ): void {
       super.updateFromNetworkSyncData(networkSyncData, options);
       if (this._text !== undefined) {
