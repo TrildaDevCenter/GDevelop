@@ -328,9 +328,9 @@ namespace gdjs {
 
       // When the object is synchronized from the network, the inputs must not be cleared UNLESS we have to force clear them for loading a savestate.
       if (!options || !options.forceInputClear) {
-        this._dontClearInputsBetweenFrames = false;
-      } else {
         this._dontClearInputsBetweenFrames = true;
+      } else {
+        this._dontClearInputsBetweenFrames = false;
       }
     }
 
