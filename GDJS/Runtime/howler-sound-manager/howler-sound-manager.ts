@@ -377,6 +377,7 @@ namespace gdjs {
         loop: this._loop,
         initialVolume: this._initialVolume,
         rate: this._rate,
+        position: this.getSeek(),
       };
     }
   }
@@ -674,7 +675,7 @@ namespace gdjs {
       this._loadedSounds.clear();
     }
 
-    playSound(soundName: string, loop: boolean, volume: float, pitch: float) {
+    playSound(soundName: string, loop: boolean, volume: float, pitch: float, position?: float) {
       const sound = this.createHowlerSound(
         soundName,
         /* isMusic= */ false,
@@ -690,6 +691,10 @@ namespace gdjs {
         }
       });
       sound.play();
+      if(position)
+      {
+        sound.setSeek(position);
+      }
     }
 
     playSoundOnChannel(
@@ -697,7 +702,8 @@ namespace gdjs {
       channel: integer,
       loop: boolean,
       volume: float,
-      pitch: float
+      pitch: float,
+      position?: float
     ) {
       if (this._sounds[channel]) this._sounds[channel].stop();
 
@@ -722,13 +728,17 @@ namespace gdjs {
         }
       });
       sound.play();
+      if(position)
+      {
+        sound.setSeek(position);
+      }
     }
 
     getSoundOnChannel(channel: integer): HowlerSound | null {
       return this._sounds[channel] || null;
     }
 
-    playMusic(soundName: string, loop: boolean, volume: float, pitch: float) {
+    playMusic(soundName: string, loop: boolean, volume: float, pitch: float, position?:float) {
       const music = this.createHowlerSound(
         soundName,
         /* isMusic= */ true,
@@ -736,14 +746,20 @@ namespace gdjs {
         loop,
         pitch
       );
+      console.log(soundName, loop, volume, pitch);
       this._storeSoundInArray(this._freeMusics, music);
       music.once('play', () => {
+        console.log("le play est fired");
         if (this._paused) {
           music.pause();
           this._pausedSounds.push(music);
         }
       });
       music.play();
+      if(position)
+      {
+        music.setSeek(position);
+      }
     }
 
     playMusicOnChannel(
@@ -751,7 +767,8 @@ namespace gdjs {
       channel: integer,
       loop: boolean,
       volume: float,
-      pitch: float
+      pitch: float,
+      position?:float,
     ) {
       if (this._musics[channel]) this._musics[channel].stop();
 
@@ -771,6 +788,10 @@ namespace gdjs {
         }
       });
       music.play();
+      if(position)
+      {
+        music.setSeek(position);
+      }
     }
 
     getMusicOnChannel(channel: integer): HowlerSound | null {
@@ -960,8 +981,10 @@ namespace gdjs {
           freeSoundsSyncData.resourceName,
           freeSoundsSyncData.loop,
           freeSoundsSyncData.initialVolume,
-          freeSoundsSyncData.rate
+          freeSoundsSyncData.rate,
+          freeSoundsSyncData.position
         );
+        
       }
 
       for (let i = 0; i < syncData.freeMusics.length; i++) {
@@ -969,8 +992,9 @@ namespace gdjs {
         this.playMusic(
           freeMusicsSyncData.resourceName,
           freeMusicsSyncData.loop,
-          freeMusicsSyncData.initialVolume,
-          freeMusicsSyncData.rate
+          100,
+          freeMusicsSyncData.rate,
+          freeMusicsSyncData.position
         );
       }
 
@@ -980,8 +1004,9 @@ namespace gdjs {
           soundsSyncData.resourceName,
           i,
           soundsSyncData.loop,
-          soundsSyncData.initialVolume,
-          soundsSyncData.rate
+          100,
+          soundsSyncData.rate,
+          soundsSyncData.position
         );
       }
 
@@ -991,8 +1016,9 @@ namespace gdjs {
           musicsSyncData.resourceName,
           i,
           musicsSyncData.loop,
-          musicsSyncData.initialVolume,
-          musicsSyncData.rate
+          100,
+          musicsSyncData.rate,
+          musicsSyncData.position
         );
       }
     }
